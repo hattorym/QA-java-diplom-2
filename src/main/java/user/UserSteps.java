@@ -46,7 +46,7 @@ public class UserSteps {
     }
 
     @Step("Авторизация пользователя по логину и токену")
-    public Response userLogin(User user, String token) {
+    public Response userLoginToken(User user, String token) {
         return requestSpec()
                 .header("Authorization", token)
                 .body(user)
