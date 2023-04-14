@@ -1,6 +1,4 @@
 import io.qameta.allure.Description;
-import io.qameta.allure.Severity;
-import io.qameta.allure.SeverityLevel;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
 import org.junit.After;
@@ -38,6 +36,7 @@ public class UserCreateTest {
                 .and()
                 .statusCode(200);
     }
+
     @Test
     @DisplayName("Проверка невозможности создания нового пользователя с уже указанными ранее данными")
     @Description("Проверяем код ответа 403 и текст ошибки о существовании такого пользователя")
@@ -54,6 +53,7 @@ public class UserCreateTest {
                 .and()
                 .statusCode(403);
     }
+
     @Test
     @DisplayName("Проверка создания нового пользователя с пустыми данными")
     @Description("Проверяем код ответа 403 и текст ошибки об обязательности всех полей")
@@ -67,6 +67,7 @@ public class UserCreateTest {
                 .and()
                 .statusCode(403);
     }
+
     @Test
     @DisplayName("Проверка создания нового пользователя с пустым полем имени")
     @Description("Проверяем код ответа 403 и текст ошибки об обязательности всех полей")
@@ -80,6 +81,7 @@ public class UserCreateTest {
                 .and()
                 .statusCode(403);
     }
+
     @Test
     @DisplayName("Проверка создания нового пользователя с пустым полем почты")
     @Description("Проверяем код ответа 403 и текст ошибки об обязательности всех полей")
@@ -93,6 +95,7 @@ public class UserCreateTest {
                 .and()
                 .statusCode(403);
     }
+
     @Test
     @DisplayName("Проверка создания нового пользователя с пустым полем почты")
     @Description("Проверяем код ответа 403 и текст ошибки об обязательности всех полей")

@@ -2,6 +2,7 @@ import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import user.User;
 import user.UserRandomizer;
@@ -15,6 +16,14 @@ public class UserLoginTest {
     private User user;
     private String accessToken;
 
+    @Before
+    public void setUp(){
+        user = UserRandomizer.createNewRandomUser();
+        response = userSteps.userCreate(user);
+        accessToken = response
+                .then().extract().body().path("accessToken");
+    }
+
     @After
     public void cleanUp() {
         if (accessToken != null) {
@@ -26,12 +35,6 @@ public class UserLoginTest {
     @DisplayName("Авторизация под существующим пользователем")
     @Description("Создание рандомного пользователя и авторизация с валидными данными")
     public void loginUserMustBeSuccessful() {
-        user = UserRandomizer.createNewRandomUser();
-        response = userSteps.userCreate(user);
-        accessToken = response
-                .then().extract().body().path("accessToken");
-        response.then()
-                .statusCode(200);
         response = userSteps.userLoginToken(user, accessToken);
         response
                 .then().body("success", equalTo(true))
@@ -43,12 +46,6 @@ public class UserLoginTest {
     @DisplayName("Авторизация с неверным логином и паролем")
     @Description("Создание рандомного пользователя и авторизация с невалидными данными, проверяем код ответа 401")
     public void loginUserWithWrongPasswordAndEmailMustReturnError() {
-        user = UserRandomizer.createNewRandomUser();
-        response = userSteps.userCreate(user);
-        accessToken = response
-                .then().extract().body().path("accessToken");
-        response.then()
-                .statusCode(200);
         String email = user.getEmail();
         user.setEmail("wrong@email.ru");
         String password = user.getPassword();
