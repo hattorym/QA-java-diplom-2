@@ -55,7 +55,7 @@ public class UserCreateTest {
     }
 
     @Test
-    @DisplayName("Проверка создания нового пользователя с пустыми данными")
+    @DisplayName("Проверка создания нового пользователя со всеми пустыми полями данных")
     @Description("Проверяем код ответа 403 и текст ошибки об обязательности всех полей")
     public void createNoDataUserTestMustReturnError() {
         user = UserRandomizer.createRandomNoDataUser();
@@ -97,7 +97,7 @@ public class UserCreateTest {
     }
 
     @Test
-    @DisplayName("Проверка создания нового пользователя с пустым полем почты")
+    @DisplayName("Проверка создания нового пользователя с пустым полем пароля")
     @Description("Проверяем код ответа 403 и текст ошибки об обязательности всех полей")
     public void createNoPasswordUserTestMustReturnError() {
         user = UserRandomizer.createRandomNoPasswordUser();

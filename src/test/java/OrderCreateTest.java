@@ -26,7 +26,7 @@ public class OrderCreateTest {
     }
 
     @Test
-    @DisplayName("Создание заказа с авторизацией пользователя и с ингредиентами")
+    @DisplayName("Создание заказа с авторизацией пользователя и с валидным хэшем ингредиентов")
     public void createOrderWithUserLoginAndCorrectIngHashShouldReturnOk() {
         User user = UserRandomizer.createNewRandomUser();
         response = userSteps.userCreate(user);
@@ -60,7 +60,7 @@ public class OrderCreateTest {
     }
 
     @Test
-    @DisplayName("Создание заказа без ингредиентов")
+    @DisplayName("Создание заказа с пустым списком ингредиентов")
     public void createOrderWithoutIngredientsShouldReturnError() {
         response = orderSteps.createOrderWithoutToken(Order.getOrderEmptyList());
         response.then()
