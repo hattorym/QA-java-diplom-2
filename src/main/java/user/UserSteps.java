@@ -31,7 +31,7 @@ public class UserSteps {
     }
 
     @Step("Изменение профиля пользователя")
-    public Response userChangeProfile(User newUser, String token) {
+    public Response userProfileChanging(User newUser, String token) {
         return requestSpec()
                 .header("Authorization", token)
                 .body(newUser)

@@ -11,14 +11,6 @@ import user.UserSteps;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
-/*
-Создание заказа:
-с авторизацией,
-без авторизации,
-с ингредиентами,
-без ингредиентов,
-с неверным хешем ингредиентов.
- */
 public class OrderCreateTest {
     private final UserSteps userSteps = new UserSteps();
     private final OrderSteps orderSteps = new OrderSteps();
@@ -35,7 +27,7 @@ public class OrderCreateTest {
 
     @Test
     @DisplayName("Создание заказа с авторизацией пользователя и с ингредиентами")
-    public void createOrderWithAuth() {
+    public void createOrderWithUserLoginAndCorrectIngHashShouldReturnOk() {
         User user = UserRandomizer.createNewRandomUser();
         response = userSteps.userCreate(user);
         accessToken = response
@@ -48,8 +40,8 @@ public class OrderCreateTest {
     }
 
     @Test
-    @DisplayName("Создание заказа без авторизации пользователя с ингредиентами")
-    public void createOrderWithIngredients() {
+    @DisplayName("Создание заказа без авторизации пользователя и с пустым хэшем ингредиентов")
+    public void createOrderWithoutUserLoginAndEmptyIngHashShouldReturnOk() {
         response = orderSteps.createOrderWithToken(Order.getOrderCorrectHash(), "");
         response.then()
                 .body("success", equalTo(true))
@@ -58,8 +50,8 @@ public class OrderCreateTest {
     }
 
     @Test
-    @DisplayName("Создание заказа с корректными хэш ингредиентов")
-    public void createOrderWithIngredientsNoAuth() {
+    @DisplayName("Создание заказа без хэша ингредиентов")
+    public void createOrderWithoutUserLoginAndWithoutIngHashShouldReturnOk() {
         response = orderSteps.createOrderWithoutToken(Order.getOrderCorrectHash());
         response.then()
                 .body("success", equalTo(true))
@@ -69,7 +61,7 @@ public class OrderCreateTest {
 
     @Test
     @DisplayName("Создание заказа без ингредиентов")
-    public void createOrderWithoutIngredientsShouldBeError() {
+    public void createOrderWithoutIngredientsShouldReturnError() {
         response = orderSteps.createOrderWithoutToken(Order.getOrderEmptyList());
         response.then()
                 .body("message", equalTo("Ingredient ids must be provided"))

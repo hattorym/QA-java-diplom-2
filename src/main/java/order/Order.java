@@ -10,7 +10,7 @@ public class Order {
     }
 
     public static Order getOrderCorrectHash() {
-        return new Order(List.of("60d3b41abdacab0026a733c6", "609646e4dc916e00276b2870"));
+        return new Order(List.of("61c0c5a71d1f82001bdaaa6d", "61c0c5a71d1f82001bdaaa6f"));
     }
 
     public static Order getOrderNotCorrectHash() {
@@ -21,8 +21,12 @@ public class Order {
         return new Order(List.of());
     }
 
-    public static Order getOrderMarsBurger() {
-        return new Order(List.of("61c0c5a71d1f82001bdaaa71", "61c0c5a71d1f82001bdaaa6e"));
+    public List<String> getIngredients() {
+        return ingredients;
+    }
+
+    public void setIngredients(List<String> ingredients) {
+        this.ingredients = ingredients;
     }
 
 }

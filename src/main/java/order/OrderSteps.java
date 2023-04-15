@@ -8,10 +8,10 @@ import static io.restassured.RestAssured.given;
 
 public class OrderSteps {
     @Step("Создание заказа с авторизацией")
-    public Response createOrderWithToken(Order order, String accessToken) {
+    public Response createOrderWithToken(Order order, String token) {
         return given()
                 .header("Content-Type", "application/json")
-                .header("Authorization", accessToken)
+                .header("Authorization", token)
                 .baseUri(ApiEndpoints.BASE_URL)
                 .body(order)
                 .post(ApiEndpoints.ORDERS);
@@ -27,10 +27,10 @@ public class OrderSteps {
 
 
     @Step("Запрос данных о заказах пользователя по токену")
-    public Response getUserOrders(String token) {
+    public Response getUserOrders(String accessToken) {
         return given()
                 .header("Content-Type", "application/json")
-                .header("Authorization", token)
+                .header("Authorization", accessToken)
                 .baseUri(ApiEndpoints.BASE_URL)
                 .get(ApiEndpoints.ORDERS);
     }
