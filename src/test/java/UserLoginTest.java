@@ -17,7 +17,7 @@ public class UserLoginTest {
     private String accessToken;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         user = UserRandomizer.createNewRandomUser();
         response = userSteps.userCreate(user);
         accessToken = response

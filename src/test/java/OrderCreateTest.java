@@ -1,13 +1,18 @@
+import constant.ApiEndpoints;
+import ingredients.Ingredient;
 import io.qameta.allure.junit4.DisplayName;
+import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import order.Order;
 import order.OrderSteps;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import user.User;
 import user.UserRandomizer;
 import user.UserSteps;
 
+import static ingredients.IngredientRequest.getIngredientFromArray;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
@@ -15,8 +20,14 @@ public class OrderCreateTest {
     private final UserSteps userSteps = new UserSteps();
     private final OrderSteps orderSteps = new OrderSteps();
     private String accessToken;
-
     private Response response;
+    private Ingredient validIngredient;
+
+    @Before
+    public void setUp() {
+        RestAssured.baseURI = ApiEndpoints.BASE_URL;
+        validIngredient = getIngredientFromArray();
+    }
 
     @After
     public void cleanUp() {
@@ -29,10 +40,10 @@ public class OrderCreateTest {
     @DisplayName("Создание заказа с авторизацией пользователя и с валидным хэшем ингредиентов")
     public void createOrderWithUserLoginAndCorrectIngHashShouldReturnOk() {
         User user = UserRandomizer.createNewRandomUser();
+        Order order = new Order(validIngredient);
         response = userSteps.userCreate(user);
-        accessToken = response
-                .then().extract().body().path("accessToken");
-        response = orderSteps.createOrderWithToken(Order.getOrderCorrectHash(), accessToken);
+        accessToken = response.then().extract().body().path("accessToken");
+        response = orderSteps.createOrderWithToken(order, accessToken);
         response.then()
                 .body("success", equalTo(true))
                 .and()
@@ -42,7 +53,8 @@ public class OrderCreateTest {
     @Test
     @DisplayName("Создание заказа без авторизации пользователя и с пустым хэшем ингредиентов")
     public void createOrderWithoutUserLoginAndEmptyIngHashShouldReturnOk() {
-        response = orderSteps.createOrderWithToken(Order.getOrderCorrectHash(), "");
+        Order order = new Order(validIngredient);
+        response = orderSteps.createOrderWithToken(order, "");
         response.then()
                 .body("success", equalTo(true))
                 .and()
@@ -51,18 +63,24 @@ public class OrderCreateTest {
 
     @Test
     @DisplayName("Создание заказа без хэша ингредиентов")
-    public void createOrderWithoutUserLoginAndWithoutIngHashShouldReturnOk() {
-        response = orderSteps.createOrderWithoutToken(Order.getOrderCorrectHash());
+    public void createOrderWithoutUserLoginAndWithoutIngHashShouldReturnError() {
+        User user = UserRandomizer.createNewRandomUser();
+        Order order = new Order();
+        response = userSteps.userCreate(user);
+        response = orderSteps.createOrderWithoutToken(order);
         response.then()
-                .body("success", equalTo(true))
+                .body("success", equalTo(false))
                 .and()
-                .statusCode(200);
+                .statusCode(400);
     }
 
     @Test
     @DisplayName("Создание заказа с пустым списком ингредиентов")
     public void createOrderWithoutIngredientsShouldReturnError() {
-        response = orderSteps.createOrderWithoutToken(Order.getOrderEmptyList());
+        User user = UserRandomizer.createNewRandomUser();
+        Order order = new Order();
+        response = userSteps.userCreate(user);
+        response = orderSteps.createOrderWithoutToken(order);
         response.then()
                 .body("message", equalTo("Ingredient ids must be provided"))
                 .and()
@@ -72,8 +90,12 @@ public class OrderCreateTest {
     @Test
     @DisplayName("Создание заказа с неверным хешем ингредиентов")
     public void createOrderWithWrongIngredientHashReturnError() {
-        Order order = Order.getOrderNotCorrectHash();
-        response = orderSteps.createOrderWithoutToken(order);
+        validIngredient.set_id("MutantIngredientTokenWussHere.");
+        Order order = new Order(validIngredient);
+        User user = UserRandomizer.createNewRandomUser();
+        response = userSteps.userCreate(user);
+        accessToken = response.then().extract().body().path("accessToken");
+        response = orderSteps.createOrderWithToken(order, accessToken);
         response.then().
                 statusCode(500);
     }
